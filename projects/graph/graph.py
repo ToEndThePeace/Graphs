@@ -46,6 +46,7 @@ class Graph:
             current = q.dequeue()
 
             if current not in visited:
+                print(current)
                 visited.append(current)
                 for neighbor in self.get_neighbors(current):
                     q.enqueue(neighbor)
@@ -65,6 +66,7 @@ class Graph:
             current = s.pop()
 
             if current not in visited:
+                print(current)
                 visited.append(current)
                 for neighbor in self.get_neighbors(current):
                     s.push(neighbor)
@@ -81,12 +83,12 @@ class Graph:
         if visited is None:
             visited = []
 
+        print(starting_vertex)
         visited.append(starting_vertex)
 
         for neighbor in self.vertices[starting_vertex]:
             if neighbor not in visited:
                 self.dft_recursive(neighbor, visited)
-
         return visited
 
     def bfs(self, starting_vertex, destination_vertex):
@@ -101,7 +103,6 @@ class Graph:
 
         while q.size() > 0:
             current = q.dequeue()
-            # print(current)
             if current[-1] not in visited:
                 visited.append(current[-1])
                 for neighbor in self.get_neighbors(current[-1]):
