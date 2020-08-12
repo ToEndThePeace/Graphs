@@ -34,9 +34,7 @@ def earliest_ancestor2(ancestors, starting_node):
     for i, j in ancestors:
         ancestor_graph.add_vertex(i)
         ancestor_graph.add_vertex(j)
-    for i, j in ancestors:
         ancestor_graph.add_edge(j, i)
-    # print(ancestor_graph)
 
     s = Stack()
     s.push([starting_node])
