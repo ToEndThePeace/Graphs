@@ -15,7 +15,6 @@ def earliest_ancestor1(ancestors, starting_node):
         else:
             ancestor_lookup[a[1]].append(a[0])
     # print(ancestor_lookup)
-    print(ancestor_lookup)
 
     def get_ancestor(node):
         if len(ancestor_lookup[node]) == 0:
@@ -32,11 +31,11 @@ def earliest_ancestor1(ancestors, starting_node):
 
 def earliest_ancestor2(ancestors, starting_node):
     ancestor_graph = Graph()
-    for i in ancestors:
-        ancestor_graph.add_vertex(i[0])
-        ancestor_graph.add_vertex(i[1])
-    for i in ancestors:
-        ancestor_graph.add_edge(i[1], i[0])
+    for i, j in ancestors:
+        ancestor_graph.add_vertex(i)
+        ancestor_graph.add_vertex(j)
+    for i, j in ancestors:
+        ancestor_graph.add_edge(j, i)
     # print(ancestor_graph)
 
     s = Stack()
@@ -56,8 +55,7 @@ def earliest_ancestor2(ancestors, starting_node):
         return -1
 
     res = possible_res[0]
-
-    max_len = 0
+    max_len = len(res)
 
     for x in possible_res:
         if len(x) >= max_len:
@@ -67,4 +65,4 @@ def earliest_ancestor2(ancestors, starting_node):
     return res[-1]
 
 
-earliest_ancestor = earliest_ancestor2
+earliest_ancestor = earliest_ancestor1
