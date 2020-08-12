@@ -1,3 +1,4 @@
+from util import Queue
 import random
 
 
@@ -85,6 +86,30 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        def bfs(v1, v2):
+            q = Queue()
+            q.enqueue([v1])
+            touched = []
+            if v1 == v2:
+                return q.dequeue()
+
+            while q.size() > 0:
+                current = q.dequeue()
+                if current[-1] not in touched:
+                    touched.append(current[-1])
+                    for neighbor in self.friendships[current[-1]]:
+                        new_path = current + [neighbor]
+                        if v2 == neighbor:
+                            return new_path
+                        q.enqueue(new_path)
+            return None
+
+        for user in self.users:
+            shortest_path = bfs(user_id, user)
+            if shortest_path is not None:
+                visited[user] = shortest_path
+
         return visited
 
 
