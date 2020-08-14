@@ -22,7 +22,7 @@ room_graph = literal_eval(open(map_file, "r").read())
 world.load_graph(room_graph)
 
 # Print an ASCII map
-world.print_rooms()
+# world.print_rooms()
 
 player = Player(world.starting_room)
 
@@ -42,12 +42,14 @@ opposite = {
     "w": "e"
 }
 
-# visited.add(player.current_room.id)
-# available_moves[player.current_room.id] = player.current_room.get_exits()
+# initialize lookup tables to remedy backtrack removal indexing issue
+visited.add(player.current_room.id)
+available_moves[player.current_room.id] = player.current_room.get_exits()
 
 # loop until we've visited EVERY room
 while len(visited) < len(world.rooms) - 1:
 
+    # if player.current_room.id in visited:
     # this sets up our lookup tables on first encounter!
     if player.current_room.id not in visited:
         # get the current room id to use as index in visited set and available_moves lookup table
@@ -55,6 +57,10 @@ while len(visited) < len(world.rooms) - 1:
         visited.add(current)
         # we only call get_exits ONCE PER ROOM so that we know when we've already gone somewhere!
         available_moves[current] = player.current_room.get_exits()
+        # because traversing between rooms is UNDIRECTED, if you go north from room 1 to room 2,
+        # you don't need to go south from room 2~~
+        # adding initialization statements before the outer while loop to prevent indexing issue
+        available_moves[player.current_room.id].remove(backtrack.stack[-1])
 
     # when we've gone down ever corridor in our current room already, backtrack!~
     while len(available_moves[player.current_room.id]) <= 0:
