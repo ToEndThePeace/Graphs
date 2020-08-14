@@ -29,36 +29,51 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+# set to keep track of what rooms we've been in
+visited = set()
+# lookup table for available moves
+available_moves = {}
+# to store a backwards
+backtrack = Stack()
 opposite = {
     "n": "s",
     "s": "n",
     "e": "w",
     "w": "e"
 }
-visited = set()
-available_moves = {}
-backtrack = Stack()
 
+# visited.add(player.current_room.id)
+# available_moves[player.current_room.id] = player.current_room.get_exits()
 
-visited.add(player.current_room.id)
-available_moves[player.current_room.id] = player.current_room.get_exits()
-while len(visited) < len(world.rooms):
+# loop until we've visited EVERY room
+while len(visited) < len(world.rooms) - 1:
 
+    # this sets up our lookup tables on first encounter!
     if player.current_room.id not in visited:
+        # get the current room id to use as index in visited set and available_moves lookup table
         current = player.current_room.id
         visited.add(current)
+        # we only call get_exits ONCE PER ROOM so that we know when we've already gone somewhere!
         available_moves[current] = player.current_room.get_exits()
 
-    # when there's nowhere left to go, go backwards!~
+    # when we've gone down ever corridor in our current room already, backtrack!~
     while len(available_moves[player.current_room.id]) <= 0:
+        # get the step to backtrack to the last room we were in
         go_back = backtrack.pop()
+        # add it to our traversal path
         traversal_path.append(go_back)
+        # and then go there
         player.travel(go_back)
+
+    # check available moves for our next step (and REMOVE that move from our lookup table!),
+    # add to traversal path, and go there!
     go_to = available_moves[player.current_room.id].pop()
     traversal_path.append(go_to)
-    backtrack.push(opposite[go_to])
-    # print(available_moves[player.current_room.id], traversal_path[-1])
     player.travel(go_to)
+
+    # store the reverse of the direction in our backtrack stack, so we know where to go
+    # when we run out of available moves in our current room
+    backtrack.push(opposite[go_to])
 
     # print(backtrack.stack, available_moves)
     # print(traversal_path)
