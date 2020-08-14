@@ -39,21 +39,25 @@ visited = set()
 available_moves = {}
 backtrack = Stack()
 
+
 visited.add(player.current_room.id)
 available_moves[player.current_room.id] = player.current_room.get_exits()
-while len(visited) < len(world.rooms) :
+while len(visited) < len(world.rooms):
 
     if player.current_room.id not in visited:
         current = player.current_room.id
         visited.add(current)
         available_moves[current] = player.current_room.get_exits()
+
+    # when there's nowhere left to go, go backwards!~
     while len(available_moves[player.current_room.id]) <= 0:
         go_back = backtrack.pop()
         traversal_path.append(go_back)
         player.travel(go_back)
-    go_to = available_moves[player.current_room.id].pop(0)
+    go_to = available_moves[player.current_room.id].pop()
     traversal_path.append(go_to)
     backtrack.push(opposite[go_to])
+    # print(available_moves[player.current_room.id], traversal_path[-1])
     player.travel(go_to)
 
     # print(backtrack.stack, available_moves)
@@ -66,7 +70,6 @@ while len(visited) < len(world.rooms) :
 #     if i not in visited:
 #         print(i)
 # print(visited)
-
 
 
 # TRAVERSAL TEST
