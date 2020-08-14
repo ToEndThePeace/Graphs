@@ -24,12 +24,16 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
-            print("WARNING: You cannot be friends with yourself")
+            # print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
-            print("WARNING: Friendship already exists")
+            # print("WARNING: Friendship already exists")
+            return False
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+
+        return True
 
     def add_user(self, name):
         """
@@ -71,9 +75,32 @@ class SocialGraph:
         random.shuffle(possible_friendships)
 
         # slice the end off of the list of possible friendships
-        # keep only the ipnut number of elementes
+        # only as many friendships as needed, calculated from input
         for uid, fid in possible_friendships[:num_users * avg_friendships // 2]:
             self.add_friendship(uid, fid)
+
+    def populate_graph2(self, num_users, avg_friendships):
+        self.reset()
+
+        # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i}")
+
+        target_friendships = num_users * avg_friendships // 2
+        total_friendships = 0
+
+        collisions = 0
+
+        while total_friendships < target_friendships:
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+
+            if self.add_friendship(user_id, friend_id):
+                total_friendships += 2
+            else:
+                collisions += 1
+
+        return collisions
 
     def get_all_social_paths(self, user_id):
         """
@@ -115,7 +142,12 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    # col = 0
+    # for i in range(20):
+    #      col += sg.populate_graph2(100, 99)
+    # print(f"Avg Collisions: {col / 20}")
+    sg.populate_graph(100, 2)
+    # sg.populate_graph2(100, 2)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
